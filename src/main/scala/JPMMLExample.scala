@@ -2,15 +2,11 @@ import java.io.File
 import java.io.FileInputStream
 
 import org.dmg.pmml.PMML
-
 import org.jpmml.evaluator.Evaluator
 import org.jpmml.evaluator.InputField
 import org.jpmml.evaluator.ModelEvaluatorFactory
 
-import org.jpmml.model.ImportFilter
-import org.jpmml.model.JAXBUtil
-
-import org.xml.sax.InputSource
+import org.jpmml.model.PMMLUtil
 
 import collection.JavaConverters._
 
@@ -38,7 +34,7 @@ object JPMMLExample extends App {
   })
 
   // Perform scoring using JPMML
-  val regular_score_list = scoring_list.map(el => evaluator.evaluate(el).values.asScala.toList)
+  val regular_score_list = scoring_list.map(el ⇒ evaluator.evaluate(el).values.asScala.toList)
 
   // Save the outputs as a CSV
   writeCSV(output_csv_filename, regular_score_list)
@@ -47,8 +43,7 @@ object JPMMLExample extends App {
   def readPMML(filename: String): PMML = {
     val is = new FileInputStream(new File(filename))
     try {
-      val source = ImportFilter.apply(new InputSource(is))
-      JAXBUtil.unmarshalPMML(source)
+      PMMLUtil.unmarshal(is)
     }
     finally {
       is.close()
